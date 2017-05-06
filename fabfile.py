@@ -6,11 +6,11 @@ env.user = 'root'
 env.sudo_user = 'root'
 # 服务器地址，可以有多个，依次部署:
 env.hosts = ['120.24.190.4']
-env.password='rootftp'
+env.password='******'
 
 # 服务器MySQL用户名和口令:
-db_user = 'root'
-db_password = '123456'
+db_user = '****'
+db_password = '******'
 
 _TAR_FILE = 'dist-awesome.tar.gz'
 

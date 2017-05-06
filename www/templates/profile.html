@@ -1,0 +1,43 @@
+{% extends '__base__.html' %}
+
+{% block title %}{{ user.name }}{% endblock %}
+
+{% block content %}
+
+
+
+
+ {% if user %}
+        <article class="uk-width-medium-1-4">    
+                <img class="uk-comment-avatar uk-border-circle" width="50" height="50" src="{{ __user__.image }}">
+                <h4 class="uk-comment-title">{{ user.name }}</h4>
+                <hr class="uk-article-divider">
+                <p>✈️:{{user.name|safe }}</p>
+
+                <p ><a href="mailto:{{user.email|safe }}">📮:{{user.email|safe }}</a></p>
+                <p>⌚️{{user.created_at|datetime}}</p>
+        </article>
+
+        
+    {% endif %}
+<div class="uk-width-medium-3-4">
+{% for blog in blogs %}  
+        <article class="uk-article">
+
+            <h3>{{ blog.name }}</h3>
+            <td>
+                        <a href="blogs/edit?id={{blog.id}}" v-on="click: edit_blog(blog)"><i class="uk-icon-edit"></i></a>
+            </td>
+
+            <p class="uk-article-meta">发表于{{ blog.created_at|datetime }}  阅读量{{  blog.clicked}}</p>
+            <p>{{ blog.summary}}</p>
+            <p><a href="/blog/{{ blog.id }}">继续阅读 <i class="uk-icon-angle-double-right"></i></a></p>
+        </article>
+        <hr class="uk-article-divider">
+ 
+{% endfor%}
+  </div> 
+
+
+
+{% endblock %}

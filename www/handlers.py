@@ -174,6 +174,24 @@ def signout(request):
 	logging.info('user signed out.')
 	return r
 
+@post('/upload')
+def upload_file():
+    if request.method == 'POST':
+        f = request.files['files[]']
+        filename = f.filename
+        minetype = f.content_type
+        f.save('static/' + filename)
+    return json.dumps({"files": [{"name": filename, "minetype": minetype}]})
+
+@get('/upload')
+def upload_file():
+    if request.method == 'POST':
+        f = request.files['files[]']
+        filename = f.filename
+        minetype = f.content_type
+        f.save('static/' + filename)
+    return json.dumps({"files": [{"name": filename, "minetype": minetype}]})
+
 @get('/manage/')
 def manage():
 	return 'redirect:/manage/comments'
@@ -274,7 +292,7 @@ async def api_get_users(*,page='1'):
 
 
 @post('/api/users')
-async def api_register_user(*,email,name,password):
+async def api_register_user(*,email,name,password,image):
 	if not name or not name.strip():
 		raise APIValueError('name')
 	if not email or not _RE_EMAIL.match(email):
@@ -285,7 +303,7 @@ async def api_register_user(*,email,name,password):
 	if len(users)>0:
 		raise APIError('register:failed','email','email is already used')
 	uid=next_id()
-	user=User(id=uid,name=name.strip(),admin=False,email=email,password=password.encode('utf8'),image='http://www.gravatar.com/avatar/%s?d=mm&s=120' % hashlib.md5(email.encode('utf-8')).hexdigest())
+	user=User(id=uid,name=name.strip(),admin=False,email=email,password=password.encode('utf8'),image=image)
 	await user.save()
 	r=web.Response()
 	r.set_cookie(COOKIE_NAME,user2cookie(user,86400),max_age=86400,httponly=True)
@@ -317,7 +335,8 @@ async def api_create_blog(request,*,name,summary,content,private=1):
 	if not name or not name.strip():
 		raise APIValueError('name','name can not be empty')
 	if not summary or not summary.strip():
-		raise APIValueError('summary','summary can not be empty')
+		#raise APIValueError('summary','summary can not be empty')
+		sunmmary=None
 	if not content or not content.strip():
 		raise APIValueError('content','content cannot be empty ')
 	user=await User.findAll('email=?',[request.__user__.email])	
@@ -355,6 +374,7 @@ async def api_update_blog(request,*args,**kw):
 	name=kw['name']
 	summary=kw['summary']
 	content=kw['content']
+	private=kw['private']
 
 	blog=await Blog.find(id)
 
@@ -371,7 +391,7 @@ async def api_update_blog(request,*args,**kw):
 	blog.name=name.strip()
 	blog.summary=summary.strip()
 	blog.content=content.strip()
-	
+	blog.private=private
 	await blog.update()
 	return blog
 

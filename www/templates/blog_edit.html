@@ -3,21 +3,25 @@
 {% block title %}编辑日志{% endblock %}
 
 {% block beforehead %}
-<meta charset="utf-8" />
+
+
+
 <script>
 
 var
     ID = '{{ id }}',
-    action = '{{ action }}';
-
+    action = '{{ action }}'
+   
 function initVM(blog) {
     var vm = new Vue({
         el: '#vm',
         data: blog,
+
         methods: {
+
             submit: function (event) {
                 event.preventDefault();
-                if (confirm('确认要公开“' + blog.name + '”？文章私有！')) {blog.private=0}
+                    blog.private=this.private;
                 var $form = $('#vm').find('form');
 
                 $form.postJSON(action, this.$data, function (err, r) {
@@ -34,6 +38,8 @@ function initVM(blog) {
                     }
                 });
             }
+
+
         }
     });
     $('#vm').show();
@@ -59,12 +65,14 @@ $(function () {
         });
     }
 });
-
 </script>
+
 
 {% endblock %}
 
+
 {% block content %}
+
     <div id="error" class="uk-width-1-1">
     </div>
 
@@ -95,9 +103,40 @@ $(function () {
             </div>
             <div class="uk-form-row">
                 <button href="/blog/{{id}}" type="submit" class="uk-button uk-button-primary"><i class="uk-icon-save"></i> 保存</button>
-                <a href="/user/{{__user__.id}}" class="uk-button"><i class="uk-icon-times"></i> 取消</a>
+                <a href="/user/{{__user__.id}}" class="uk-button"><i class="uk-icon-times"></i>取消</a>
+                <a color='black'>私密文字</a>
+
+                <input type="checkbox" id="private" v-model="private">
+                <label for="private">{{checked}}</label>
+
+
             </div>
         </form>
-    </div>
 
+</div>
+
+<div id="container">
+    <!-- <button id="pickfiles" >点击上传</button> -->
+
+<p class="tip1">本demo实现的图片预览</p>
+<button id="pickfiles">选择文件</button>
+<ul id="file-list">
+</ul>
+
+<button id="uploadfiles">上传</button>
+</div>
+
+<script type="text/javascript" src="/static/plupload/js/moxie.js"></script>
+ <script type="text/javascript" src="/static/plupload/js/plupload.dev.js"></script>
+  <script type="text/javascript" src="/static/js/qiniu.js"></script>
+  <script type="text/javascript" src="/static/js/editImage.js"></script>
 {% endblock %}
+
+
+
+     
+
+
+
+
+
